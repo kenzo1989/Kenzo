@@ -43,5 +43,47 @@ index.html:
         <h1>Bienvenido a Kenzo, tu asistente digital.</h1>
         <button onclick="alert('¡Hola! Estoy aquí para ayudarte con tus tareas.')">Haz clic aquí para interactuar</button>
     </div>
+    <script>
+  // Función: Recordatorios
+  function agregarRecordatorio() {
+    const texto = document.getElementById("textoRecordatorio").value;
+    const hora = new Date(document.getElementById("horaRecordatorio").value);
+    const ahora = new Date();
+    const tiempo = hora - ahora;
+
+    if (tiempo > 0) {
+      setTimeout(() => {
+        alert("¡Recordatorio: " + texto + "!");
+      }, tiempo);
+    } else {
+      alert("Por favor selecciona una hora futura.");
+    }
+  }
+
+  // Función: Planificador de tareas
+  function agregarTarea() {
+    const texto = document.getElementById("nuevaTarea").value;
+    if (texto !== "") {
+      const li = document.createElement("li");
+      li.textContent = texto;
+      li.onclick = () => li.remove(); // eliminar al hacer clic
+      document.getElementById("listaTareas").appendChild(li);
+      document.getElementById("nuevaTarea").value = "";
+    }
+  }
+
+  // Función: Notas rápidas
+  function guardarNota() {
+    const texto = document.getElementById("notaTexto").value;
+    if (texto !== "") {
+      const nota = document.createElement("p");
+      nota.textContent = texto;
+      nota.className = "nota";
+      document.getElementById("notasGuardadas").appendChild(nota);
+      document.getElementById("notaTexto").value = "";
+    }
+  }
+</script>
+
 </body>
 </html>
