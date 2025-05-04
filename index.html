@@ -29,135 +29,151 @@
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
+            margin: 5px;
         }
         button:hover {
             background-color: #45a049;
         }
-        h2 {
-            color: #4CAF50;
-            font-size: 1.5em;
+        .tasks, .notes, .exams, .study-break {
             margin-top: 20px;
+            width: 100%;
         }
         input[type="text"], input[type="datetime-local"] {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin: 10px;
+            padding: 8px;
+            margin: 5px;
             width: 80%;
-            max-width: 400px;
         }
         ul {
             list-style-type: none;
-            padding: 0;
+            padding-left: 0;
         }
         li {
-            padding: 10px;
-            background-color: #f0f0f0;
-            margin: 5px;
-            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .nota {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Bienvenido a Kenzo, tu asistente digital.</h1>
+        
+        <!-- Interacción básica -->
         <button onclick="alert('¡Hola! Estoy aquí para ayudarte con tus tareas.')">Haz clic aquí para interactuar</button>
+        
+        <!-- Funciones de Recordatorio -->
+        <div class="recordatorio">
+            <h2>Recordatorio</h2>
+            <input type="text" id="textoRecordatorio" placeholder="Escribe tu recordatorio">
+            <input type="datetime-local" id="horaRecordatorio">
+            <button onclick="agregarRecordatorio()">Agregar Recordatorio</button>
+        </div>
 
-        <h2>Recordatorio de Exámenes</h2>
-        <input type="text" id="examenTexto" placeholder="Escribe el nombre del examen" />
-        <input type="datetime-local" id="fechaExamen" />
-        <button onclick="agregarExamen()">Agregar Recordatorio de Examen</button>
+        <!-- Función de Tareas -->
+        <div class="tasks">
+            <h2>Planificador de Tareas</h2>
+            <input type="text" id="nuevaTarea" placeholder="Escribe tu tarea">
+            <button onclick="agregarTarea()">Agregar Tarea</button>
+            <ul id="listaTareas"></ul>
+        </div>
 
-        <h2>Hora de Estudio</h2>
-        <input type="datetime-local" id="horaEstudio" />
-        <button onclick="agregarHoraEstudio()">Agregar Hora de Estudio</button>
+        <!-- Función de Notas rápidas -->
+        <div class="notes">
+            <h2>Notas Rápidas</h2>
+            <textarea id="notaTexto" placeholder="Escribe una nota rápida"></textarea><br>
+            <button onclick="guardarNota()">Guardar Nota</button>
+            <div id="notasGuardadas"></div>
+        </div>
 
-        <h2>Hora de Descanso</h2>
-        <input type="datetime-local" id="horaDescanso" />
-        <button onclick="agregarHoraDescanso()">Agregar Hora de Descanso</button>
+        <!-- Funciones de Exámenes -->
+        <div class="exams">
+            <h2>Recordatorio de Exámenes</h2>
+            <input type="text" id="textoExamen" placeholder="Escribe el nombre del examen">
+            <input type="datetime-local" id="horaExamen">
+            <button onclick="agregarExamen()">Agregar Examen</button>
+        </div>
 
-        <h3>Exámenes Programados:</h3>
-        <ul id="listaExamenes"></ul>
-
-        <h3>Horarios de Estudio:</h3>
-        <ul id="listaEstudios"></ul>
-
-        <h3>Horarios de Descanso:</h3>
-        <ul id="listaDescansos"></ul>
+        <!-- Funciones de Estudio y Descanso -->
+        <div class="study-break">
+            <h2>Hora de Estudio y Descanso</h2>
+            <input type="number" id="tiempoEstudio" placeholder="Minutos de estudio">
+            <input type="number" id="tiempoDescanso" placeholder="Minutos de descanso">
+            <button onclick="horaEstudioDescanso()">Iniciar Estudio</button>
+        </div>
     </div>
 
     <script>
-        // Función: Recordatorio de Exámenes
+        // Función: Recordatorios
+        function agregarRecordatorio() {
+            const texto = document.getElementById("textoRecordatorio").value;
+            const hora = new Date(document.getElementById("horaRecordatorio").value);
+            const ahora = new Date();
+            const tiempo = hora - ahora;
+
+            if (tiempo > 0) {
+                setTimeout(() => {
+                    alert("¡Recordatorio: " + texto + "!");
+                }, tiempo);
+            } else {
+                alert("Por favor selecciona una hora futura.");
+            }
+        }
+
+        // Función: Planificador de tareas
+        function agregarTarea() {
+            const texto = document.getElementById("nuevaTarea").value;
+            if (texto !== "") {
+                const li = document.createElement("li");
+                li.textContent = texto;
+                li.onclick = () => li.remove(); // eliminar al hacer clic
+                document.getElementById("listaTareas").appendChild(li);
+                document.getElementById("nuevaTarea").value = "";
+            }
+        }
+
+        // Función: Notas rápidas
+        function guardarNota() {
+            const texto = document.getElementById("notaTexto").value;
+            if (texto !== "") {
+                const nota = document.createElement("p");
+                nota.textContent = texto;
+                nota.className = "nota";
+                document.getElementById("notasGuardadas").appendChild(nota);
+                document.getElementById("notaTexto").value = "";
+            }
+        }
+
+        // Función: Recordatorio de exámenes
         function agregarExamen() {
-            const examenTexto = document.getElementById("examenTexto").value;
-            const fechaExamen = new Date(document.getElementById("fechaExamen").value);
+            const examen = document.getElementById("textoExamen").value;
+            const fechaExamen = new Date(document.getElementById("horaExamen").value);
+            const ahora = new Date();
+            const tiempo = fechaExamen - ahora;
 
-            if (examenTexto !== "" && !isNaN(fechaExamen)) {
-                // Crear una nueva lista de examen
-                const li = document.createElement("li");
-                li.textContent = `${examenTexto} - Fecha: ${fechaExamen.toLocaleString()}`;
-                document.getElementById("listaExamenes").appendChild(li);
-
-                // Recordatorio de examen en la hora adecuada
-                const tiempoRestante = fechaExamen - new Date();
-                if (tiempoRestante > 0) {
-                    setTimeout(() => {
-                        alert(`¡Es hora de tu examen de ${examenTexto}!`);
-                    }, tiempoRestante);
-                } else {
-                    alert("La fecha del examen ya pasó.");
-                }
+            if (tiempo > 0) {
+                setTimeout(() => {
+                    alert("¡Es hora del examen de: " + examen + "!");
+                }, tiempo);
             } else {
-                alert("Por favor ingresa un examen válido y una fecha.");
+                alert("Por favor selecciona una fecha futura para el examen.");
             }
         }
 
-        // Función: Hora de Estudio
-        function agregarHoraEstudio() {
-            const horaEstudio = new Date(document.getElementById("horaEstudio").value);
+        // Función: Hora de estudio y descanso
+        function horaEstudioDescanso() {
+            const estudio = parseInt(document.getElementById("tiempoEstudio").value) * 60000; // Minutos en milisegundos
+            const descanso = parseInt(document.getElementById("tiempoDescanso").value) * 60000;
 
-            if (!isNaN(horaEstudio)) {
-                // Crear una nueva lista de hora de estudio
-                const li = document.createElement("li");
-                li.textContent = `Hora de Estudio: ${horaEstudio.toLocaleString()}`;
-                document.getElementById("listaEstudios").appendChild(li);
-
-                // Recordatorio de hora de estudio
-                const tiempoRestante = horaEstudio - new Date();
-                if (tiempoRestante > 0) {
+            if (!isNaN(estudio) && !isNaN(descanso)) {
+                setTimeout(() => {
+                    alert("¡Hora de descansar! Toma un descanso de " + (descanso / 60000) + " minutos.");
                     setTimeout(() => {
-                        alert("¡Es hora de estudiar!");
-                    }, tiempoRestante);
-                } else {
-                    alert("La hora de estudio ya pasó.");
-                }
+                        alert("¡Es hora de estudiar de nuevo!");
+                    }, descanso);
+                }, estudio);
             } else {
-                alert("Por favor selecciona una hora válida.");
-            }
-        }
-
-        // Función: Hora de Descanso
-        function agregarHoraDescanso() {
-            const horaDescanso = new Date(document.getElementById("horaDescanso").value);
-
-            if (!isNaN(horaDescanso)) {
-                // Crear una nueva lista de hora de descanso
-                const li = document.createElement("li");
-                li.textContent = `Hora de Descanso: ${horaDescanso.toLocaleString()}`;
-                document.getElementById("listaDescansos").appendChild(li);
-
-                // Recordatorio de hora de descanso
-                const tiempoRestante = horaDescanso - new Date();
-                if (tiempoRestante > 0) {
-                    setTimeout(() => {
-                        alert("¡Es hora de tomar un descanso!");
-                    }, tiempoRestante);
-                } else {
-                    alert("La hora de descanso ya pasó.");
-                }
-            } else {
-                alert("Por favor selecciona una hora válida.");
+                alert("Por favor, ingresa tiempos válidos.");
             }
         }
     </script>
