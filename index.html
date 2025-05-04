@@ -1,6 +1,3 @@
-
-/* Estructura mínima para el proyecto Kenzo - Asistente digital */
-index.html:
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -32,58 +29,111 @@ index.html:
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
+            margin: 5px;
         }
         button:hover {
             background-color: #45a049;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        input[type="text"], input[type="datetime-local"] {
+            padding: 8px;
+            width: 250px;
+            font-size: 16px;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            padding: 5px;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #e0e0e0;
+        }
+        .nota {
+            background-color: #f9f9f9;
+            padding: 5px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Bienvenido a Kenzo, tu asistente digital.</h1>
+
+        <!-- Interacción con el asistente -->
         <button onclick="alert('¡Hola! Estoy aquí para ayudarte con tus tareas.')">Haz clic aquí para interactuar</button>
+
+        <!-- Función Recordatorio -->
+        <div class="form-group">
+            <label for="textoRecordatorio">Recordatorio:</label>
+            <input type="text" id="textoRecordatorio" placeholder="Escribe tu recordatorio">
+            <input type="datetime-local" id="horaRecordatorio">
+            <button onclick="agregarRecordatorio()">Agregar Recordatorio</button>
+        </div>
+
+        <!-- Función Planificador de Tareas -->
+        <div class="form-group">
+            <label for="nuevaTarea">Nueva Tarea:</label>
+            <input type="text" id="nuevaTarea" placeholder="Escribe tu tarea">
+            <button onclick="agregarTarea()">Agregar Tarea</button>
+        </div>
+        <ul id="listaTareas"></ul>
+
+        <!-- Función Notas rápidas -->
+        <div class="form-group">
+            <label for="notaTexto">Nota Rápida:</label>
+            <input type="text" id="notaTexto" placeholder="Escribe tu nota">
+            <button onclick="guardarNota()">Guardar Nota</button>
+        </div>
+        <div id="notasGuardadas"></div>
     </div>
+
     <script>
-  // Función: Recordatorios
-  function agregarRecordatorio() {
-    const texto = document.getElementById("textoRecordatorio").value;
-    const hora = new Date(document.getElementById("horaRecordatorio").value);
-    const ahora = new Date();
-    const tiempo = hora - ahora;
+        // Función: Recordatorios
+        function agregarRecordatorio() {
+            const texto = document.getElementById("textoRecordatorio").value;
+            const hora = new Date(document.getElementById("horaRecordatorio").value);
+            const ahora = new Date();
+            const tiempo = hora - ahora;
 
-    if (tiempo > 0) {
-      setTimeout(() => {
-        alert("¡Recordatorio: " + texto + "!");
-      }, tiempo);
-    } else {
-      alert("Por favor selecciona una hora futura.");
-    }
-  }
+            if (tiempo > 0) {
+                setTimeout(() => {
+                    alert("¡Recordatorio: " + texto + "!");
+                }, tiempo);
+            } else {
+                alert("Por favor selecciona una hora futura.");
+            }
+        }
 
-  // Función: Planificador de tareas
-  function agregarTarea() {
-    const texto = document.getElementById("nuevaTarea").value;
-    if (texto !== "") {
-      const li = document.createElement("li");
-      li.textContent = texto;
-      li.onclick = () => li.remove(); // eliminar al hacer clic
-      document.getElementById("listaTareas").appendChild(li);
-      document.getElementById("nuevaTarea").value = "";
-    }
-  }
+        // Función: Planificador de tareas
+        function agregarTarea() {
+            const texto = document.getElementById("nuevaTarea").value;
+            if (texto !== "") {
+                const li = document.createElement("li");
+                li.textContent = texto;
+                li.onclick = () => li.remove(); // eliminar al hacer clic
+                document.getElementById("listaTareas").appendChild(li);
+                document.getElementById("nuevaTarea").value = "";
+            }
+        }
 
-  // Función: Notas rápidas
-  function guardarNota() {
-    const texto = document.getElementById("notaTexto").value;
-    if (texto !== "") {
-      const nota = document.createElement("p");
-      nota.textContent = texto;
-      nota.className = "nota";
-      document.getElementById("notasGuardadas").appendChild(nota);
-      document.getElementById("notaTexto").value = "";
-    }
-  }
-</script>
+        // Función: Notas rápidas
+        function guardarNota() {
+            const texto = document.getElementById("notaTexto").value;
+            if (texto !== "") {
+                const nota = document.createElement("p");
+                nota.textContent = texto;
+                nota.className = "nota";
+                document.getElementById("notasGuardadas").appendChild(nota);
+                document.getElementById("notaTexto").value = "";
+            }
+        }
+    </script>
 
 </body>
 </html>
